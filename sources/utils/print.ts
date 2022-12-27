@@ -1,4 +1,4 @@
-import { Address, Cell, contractAddress, StateInit } from "ton";
+import { Address, Cell, contractAddress, StateInit, fromNano } from "ton";
 import BN from 'bn.js';
 import qs from 'qs';
 
@@ -18,8 +18,13 @@ export function printAddress(address: Address, testnet: boolean = true) {
     printSeparator();
 }
 
-export function printDeploy(init: { code: Cell, data: Cell }, amount: BN, command: Cell | string, testnet: boolean = true) {
+export function printWalletInfo(balance: BN, seqNo: number) {
+    console.log("Balance: " + fromNano(balance).toString());
+    console.log("SeqNo: ", seqNo);
+    printSeparator();
+}
 
+export function printDeploy(init: { code: Cell, data: Cell }, amount: BN, command: Cell | string, testnet: boolean = true) {
     // Resolve target address
     let to = contractAddress({ workchain: 0, initialCode: init.code, initialData: init.data });
 
@@ -44,5 +49,16 @@ export function printDeploy(init: { code: Cell, data: Cell }, amount: BN, comman
         });
     }
     console.log("Deploy: " + link);
+    printSeparator();
+}
+
+export function printTransfer(to: Address, amount: BN, command: Cell, testnet: boolean = true) {
+    let link = `https://${testnet ? 'test.' : ''}tonhub.com/transfer/` + to.toFriendly({ testOnly: testnet }) + "?" + qs.stringify({
+        text: "Transfer all balance from contract",
+        amount: amount.toString(10),
+        // init: initStr,
+        bin: command.toBoc({ idx: false }).toString('base64'),
+    });
+    console.log("Transfer: " + link);
     printSeparator();
 }
