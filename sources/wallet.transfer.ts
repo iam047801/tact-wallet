@@ -20,7 +20,7 @@ import BN from "bn.js";
     printHeader('WalletTactContract');
     printAddress(address, testnet);
 
-    // Create client
+    // Create client (only needed to get balance and sequence number)
     const client = new TonClient({
         endpoint: testnet ? "https://testnet.toncenter.com/api/v2/jsonRPC" : 'https://toncenter.com/api/v2/jsonRPC',
         apiKey: "4ab814faf78ab31792688facb4a5bf8e8e01c8053de98b9cf85c43b5780032db",
